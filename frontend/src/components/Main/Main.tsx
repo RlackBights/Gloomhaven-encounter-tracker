@@ -9,7 +9,6 @@ function Main() {
   return (
     <>
       <WebSocketProvider>
-        <EditOverlay />
         <ConnectionPage />
       </WebSocketProvider>
     </>

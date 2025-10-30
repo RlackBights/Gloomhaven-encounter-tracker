@@ -1,7 +1,15 @@
+import json
 from random import randint
+from typing import List
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.websockets import WebSocketState
+from starlette.responses import MalformedRangeHeader
 
+from .db import *
+from .user_data import *
+
+db = Database("GloomHaven")
 app = FastAPI()
 
 app.add_middleware(
@@ -12,73 +20,45 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: dict[WebSocket, PlayerData] = {}
-    
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        if websocket in self.active_connections.keys():
-            return
-        
-        name = websocket.query_params.get("name")
-        color = websocket.query_params.get("color")
-        print(color)
-        if name and name != "null":
-            self.active_connections[websocket] = PlayerData(name)
-        else:
-            self.active_connections[websocket] = PlayerData()
+connections = []
 
-        if color and color != "undefined":
-            self.active_connections[websocket].color = "#" + color
+async def process_message(websocket: WebSocket, data):
+    match (data["type"]):
+        case (0):
+            db.update(data["id"], "name", data["name"])
+            db.update(data["id"], "color", data["color"])
+            pass
+        case (_):
+            pass
+    await refresh_users()
 
-        await websocket.send_json({"type": 0, "name": self.active_connections[websocket].name, "color": self.active_connections[websocket].color})
-        for s in self.active_connections.keys():
-            await self.send_text(s, {"type": 1, "num": len(self.active_connections), "others": list(filter(lambda n: n != self.active_connections[s].name, list(p.name for p in self.active_connections.values()))), "otherColors": list(p.color for p in filter(lambda n: n.name != self.active_connections[s].name, list(p for p in self.active_connections.values())))})
-    
-    async def disconnect(self, websocket: WebSocket):
-        name = ""
-        for i in self.active_connections.keys():
-            if (i != websocket):
-                continue
+async def broadcast_message(data):
+    for c in connections:
+        await c.send_json(data)
 
-            print("disconnected")
-            name = self.active_connections[websocket].name
-            self.active_connections.pop(websocket, None)
-            break
-        for s in self.active_connections.keys():
-            await self.send_text(s, {"type": 2, "num": len(self.active_connections), "name": name, "others": list(filter(lambda n: n != self.active_connections[s].name, list(p.name for p in self.active_connections.values())))})
-    
-    async def broadcast(self, message, exclude=[]):
-        for connection in self.active_connections.keys():
-            if connection not in exclude:
-                await connection.send_json(message)
-
-    async def send_text(self, websocket: WebSocket, message):
-        await websocket.send_json(message)
-
-    async def process_message(self, websocket: WebSocket, message):
-        match (message["type"]):
-            case (0):
-                self.active_connections[websocket].name = message["name"]
-                self.active_connections[websocket].color = message["color"]
-            case (_):
-                pass
-
-class PlayerData:
-    def __init__(self, name: str = f"User_{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}", color: str = "#808080"):
-        self.name: str = name
-        self.color: str = color
-
-manager = ConnectionManager()
+async def refresh_users():
+    await broadcast_message({"type": 1, "users": db.read_all_json()})
 
 @app.websocket("/api")
 async def websocket_connection(websocket: WebSocket):
-    await manager.connect(websocket)
+    await websocket.accept()
+    if websocket not in connections:
+        connections.append(websocket)
+    connection_id = -1
+    param = websocket.query_params.get('id')
+    if param != None and param != "null":
+        connection_id = int(param)
+        db.create(UserData(connection_id))
+    else:
+        connection_id = db.create(UserData())
+        await websocket.send_json({"type": 0, "id": connection_id})
+    db.update(connection_id, "connected", True)
+    await refresh_users()
     try:
         while True:
             data = await websocket.receive_json()
-            print(data)
-            await manager.process_message(websocket, data)
+            await process_message(websocket, data)
     except WebSocketDisconnect:
-        await manager.disconnect(websocket)
+        db.update(connection_id, "connected", False)
+        connections.remove(websocket)
+        await refresh_users()

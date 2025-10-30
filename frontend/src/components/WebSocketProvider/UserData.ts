@@ -1,9 +1,7 @@
 export interface UserData
 {
+    id: number,
     name: string,
     color: string,
-    otherNames: string[],
-    otherColors: string[],
-    numOfConnections: number,
-    isEditorOpen?: Boolean
+    pattern: number
 }

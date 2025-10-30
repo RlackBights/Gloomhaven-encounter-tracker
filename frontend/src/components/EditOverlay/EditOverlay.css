@@ -2,7 +2,7 @@
     z-index: 999;
     width: 100vw;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     display: flex;
@@ -10,6 +10,46 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+#edit-overlay > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2vmin;
+}
+
+#edit-overlay input[type="text"] {
+    width: 50vmin;
+    height: 10vmin;
+    font-size: 8vmin;
+    margin-bottom: 5vmin;
+    border: none;
+    background-color: #1a1a1a;
+    outline: none;
+    border-radius: 1rem;
+    padding: 2vmin;
+}
+
+#edit-overlay input[type="color"] {
+    position: relative;
+    border: none;
+    outline: none;
+    width: 12vmin;
+    height: 12vmin;
+    border-radius: 50%;
+    margin-bottom: 5vmin;
+}
+
+#edit-overlay input[type="color"]::after {
+    content: "";
+    top: 0;
+    left: 0;
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
 }
 
 #edit-overlay svg {
