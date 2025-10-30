@@ -1,0 +1,15 @@
+.animated-text-container {
+    position: relative;
+}
+
+.animated-text-letter {
+    position: relative;
+    display: inline-block;
+    transform: translateY(var(--offset));
+    margin: 0;
+    will-change: transform;
+}
+
+h1.animated-text-letter {
+    font-size: 8vmin;
+}
