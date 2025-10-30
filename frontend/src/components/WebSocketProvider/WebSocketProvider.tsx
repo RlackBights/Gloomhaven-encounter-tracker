@@ -9,7 +9,7 @@ export default function WebSocketProvider({ children }: { children: ReactNode })
     const [userData, setUserData] = useState<UserData | null>(null)
 
     const { sendJsonMessage, lastJsonMessage, readyState }: WebSocketData = useWebSocket(
-        `/api?name=${localStorage.getItem("name")}`,
+        `/api?name=${localStorage.getItem("name")}&color=${localStorage.getItem("color")?.substring(1)}`,
         {
             share: false,
             shouldReconnect: () => true,
@@ -17,7 +17,6 @@ export default function WebSocketProvider({ children }: { children: ReactNode })
     )
 
     useEffect(() => {
-        console.log("Connection state changed")
         if (readyState === ReadyState.OPEN) {
             console.log("Connected!")
         }
@@ -28,19 +27,20 @@ export default function WebSocketProvider({ children }: { children: ReactNode })
         switch (lastJsonMessage.type) {
             case 0:
                 localStorage.setItem("name", lastJsonMessage.name);
+                localStorage.setItem("color", lastJsonMessage.color);
                 setUserData(u => {
-                    let n: UserData = { name: lastJsonMessage.name, numOfConnections: u ? u.numOfConnections : 1 };
+                    let n: UserData = { ...u, name: lastJsonMessage.name, color: lastJsonMessage.color, numOfConnections: u ? u.numOfConnections : 1, otherNames: u ? u.otherNames : [], otherColors: u ? u.otherColors : [] };
                     return n
                 })
                 break;
             case 1:
                 setUserData(u => {
-                    let n: UserData = { name: ((u !== null) ? u.name : ((localStorage.getItem("name") !== null) ? localStorage.getItem("name") : ""))!, numOfConnections: lastJsonMessage.num };
+                    let n: UserData = { ...u, name: ((u !== null) ? u.name : ((localStorage.getItem("name") !== null) ? localStorage.getItem("name") : ""))!, color: u ? u.color : "#808080", numOfConnections: lastJsonMessage.num, otherNames: lastJsonMessage.others, otherColors: lastJsonMessage.otherColors };
                     return n
                 })
                 break;
             case 2:
-                setUserData(u => ({...u!, numOfConnections: lastJsonMessage.num}))
+                setUserData(u => ({...u!, numOfConnections: lastJsonMessage.num, otherNames: lastJsonMessage.others}))
                 break;
             default:
                 break;

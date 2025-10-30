@@ -1,5 +1,9 @@
 export interface UserData
 {
     name: string,
-    numOfConnections: number
+    color: string,
+    otherNames: string[],
+    otherColors: string[],
+    numOfConnections: number,
+    isEditorOpen?: Boolean
 }

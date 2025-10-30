@@ -11,15 +11,20 @@
     box-sizing: border-box;
 }
 
+.player-card h1 {
+    user-select: none;
+}
+
 .player-card {
-    background-color: gray;
+    translate: 0.25 all;
+    background-color: #808080;
     flex: 1 1 0;
     width: 100%;
     border-radius: 2rem;
     position: relative;
 }
 
-.player-card::after {
+.player-card > div {
     position: absolute;
     display: block;
     bottom: -0.5rem;
@@ -27,7 +32,19 @@
     width: 100%;
     height: 2.5rem;
     content: "";
-    background-color: rgb(63, 63, 63);
+    background-color: #808080;
+    filter: brightness(0.5);
     z-index: -1;
     border-radius: 0 0 2rem 2rem;
+}
+
+.player-card[data-current-player=true]:hover {
+    cursor: pointer;
+    background-color: rgb(97, 97, 97);
+}
+
+.player-card > svg {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
 }

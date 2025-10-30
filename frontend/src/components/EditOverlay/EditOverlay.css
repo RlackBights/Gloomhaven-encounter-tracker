@@ -1,0 +1,22 @@
+#edit-overlay {
+    z-index: 999;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    background-color: #000000b9;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#edit-overlay svg {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    height: 10vmin;
+    width: 10vmin;
+}

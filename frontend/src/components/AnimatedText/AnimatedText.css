@@ -8,6 +8,7 @@
     transform: translateY(var(--offset));
     margin: 0;
     will-change: transform;
+    user-select: none;
 }
 
 h1.animated-text-letter {
