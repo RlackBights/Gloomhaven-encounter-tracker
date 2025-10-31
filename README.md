@@ -4,14 +4,14 @@ yippee
 A small personal project I'm working on for my friends and I, so we can track monsters more effectively, since managing them by hand is a huge waste of time.
 
 ## How to use
-NOT COMPLETE YET IM WORKIN ON IT
-but apart from that it's pretty self-explanatory, you'll know if you've played the game
-if not, why are you even here wth
-I'll actually give instructions if and when I'm done with the project
+NOT COMPLETE YET IM WORKIN ON IT  
+but apart from that it's pretty self-explanatory, you'll know if you've played the game  
+if not, why are you even here wth  
+I'll actually give instructions if and when I'm done with the project  
 
 ## How does it work
-The current idea is that both the frontend and backend run on the same machine, and the players connect to the hosted frontend on the same network.
-I currently have no resources to have a proper backend server separate from the frontend, or any locally hosting machines, so that's the best for now.
+The current idea is that both the frontend and backend run on the same machine, and the players connect to the hosted frontend on the same network.  
+I currently have no resources to have a proper backend server separate from the frontend, or any locally hosting machines, so that's the best for now.  
 
 ## Technologies used
 For the backend I'm using python mainly with the FastAPI library, using WebSockets for proper real-time communication
