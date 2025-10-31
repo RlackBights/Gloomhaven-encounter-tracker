@@ -1,7 +1,7 @@
 import { useEffect, useRef, type JSX, type ReactNode } from "react";
 import './AnimatedText.css'
 
-export default function AnimatedText({ children, Element = "p", animationFunction }: { children: ReactNode, Element?: React.ElementType, animationFunction: (i: number, t: number) => number })
+export default function AnimatedText({ children, style = {}, Element = "p", animationFunction }: { children: ReactNode, style?: any, Element?: React.ElementType, animationFunction: (i: number, t: number) => number })
 {
     const containerRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function AnimatedText({ children, Element = "p", animationFunctio
     return (
         <div ref={containerRef} className="animated-text-container">
             {children?.toString().split('').map((c: string, i: number) => (
-                <Element className="animated-text-letter" key={i}>{c === ' ' ? '\u00A0' : c}</Element>  
+                <Element style={style} className="animated-text-letter" key={i}>{c === ' ' ? '\u00A0' : c}</Element>  
             ))}
         </div>
     )

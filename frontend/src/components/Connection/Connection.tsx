@@ -5,11 +5,17 @@ import './Connection.css'
 import AnimatedText from "../AnimatedText/AnimatedText.js";
 import { FaStarOfLife } from "react-icons/fa";
 import EditOverlay from "../EditOverlay/EditOverlay.js";
+import Patterns from "../../assets/index.js";
+import { BiSolidRightArrow } from "react-icons/bi";
+import { usePageContext } from "../Main/PageContext.js";
+import { hexToRgb, isLight } from "../Tools/Tools.js";
+import Pages from "../Main/Pages.js";
 
 export default function ConnectionPage()
 {
     const [editorOpen, setEditorOpen] = useState<boolean>(false);
     const data = useWebSocketContext();
+    const page = usePageContext();
 
     const setCurrUser = (user: UserData) => {
         data?.user.setUserData((users: UserData[]) => {
@@ -19,34 +25,28 @@ export default function ConnectionPage()
             return users
         })
     }
-
-    function hexToRgb(hex: string) {
-        let result: string[] | null = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1]!, 16),
-            g: parseInt(result[2]!, 16),
-            b: parseInt(result[3]!, 16)
-        } : null;
-    }
-
-    console.log(data?.user.userData[0]?.id === parseInt(localStorage.getItem("id")!));
     
     return (
-        <div id="connection-container">
+        <div id="connection-container" style={{display: "none"}}>
             <AnimatedText animationFunction={(i, t) => Math.sin(t * 4 + i * 0.4) * 2} Element={'h1'}>Waiting for players...</AnimatedText>
+            <div id="start-btn" onClick={() => {
+                data?.socket.sendJsonMessage({type: 1, page: Pages.INITIATIVE})
+            }}>
+                <BiSolidRightArrow />
+            </div>
             {data?.user.userData.sort(u => u.id).map((user: UserData, i: number) => {
                 const isCurrentUser = user.id === parseInt(localStorage.getItem("id")!);
-                const isLight = (hexToRgb(user.color)!.r * 0.299 + hexToRgb(user.color)!.g * 0.587 + hexToRgb(user.color)!.b * 0.114) > 186;
+                const light = isLight(hexToRgb(user.color)!);
                 return (
                     <div key={i} className="player-card-wrapper">
-                        { isCurrentUser && editorOpen && <EditOverlay editorOpen setEditorOpen={setEditorOpen} currUser={user} setCurrUser={setCurrUser} index={i} /> }
-                        <div className="player-card" style={{backgroundColor: user.color}} data-current-player={isCurrentUser} onClick={!isCurrentUser ? () => {} : () => {
+                        { isCurrentUser && editorOpen && <EditOverlay setEditorOpen={setEditorOpen} currUser={user} index={i} /> }
+                        <div className="player-card" style={{backgroundColor: user.color, backgroundImage: `url("${Patterns[user.pattern]}")`}} data-current-player={isCurrentUser} onClick={!isCurrentUser ? () => {} : () => {
                             setEditorOpen(true)
                         }}>
-                            { isCurrentUser && <FaStarOfLife /> }
-                            <h1 style={{ color: isLight ? "black" : "white" }} >{user.name}</h1>
+                            { isCurrentUser && <FaStarOfLife style={{ color: light ? "black" : "white" }} /> }
+                            <h1 style={{ color: light ? "black" : "white" }} >{user.name}</h1>
                         </div>
-                        <div className="player-card-shadow" style={{backgroundColor: user.color}}></div>
+                        <div className="player-card-shadow" style={{backgroundColor: user.color }}></div>
                     </div>
                 )
             })}

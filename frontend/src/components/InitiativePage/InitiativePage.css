@@ -1,0 +1,123 @@
+#initiative-container {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5vmin;
+    align-items: center;
+    padding: 10vmin 5vmin;
+    box-sizing: border-box;
+}
+
+#initiative-container > .animated-text-container {
+    width: fit-content;
+}
+
+#initiative-inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 5vmin;
+    position: absolute;
+    top: 30vh;
+    transform: translateY(-50%);
+}
+
+#initiative-inputs > input[type="number"] {
+    aspect-ratio:  1 / 1;
+    width: 8vmax;
+    border-radius: 1rem;
+    border: none;
+    outline: none;
+    text-align: center;
+    font-size: 4vmax;
+    
+}
+
+#initiative-inputs > input[type="number"]::-webkit-inner-spin-button,
+#initiative-inputs > input[type="number"]::-webkit-outer-spin-button {
+    display: none;
+}
+
+#initiative-inputs > svg {
+    width: 6vmax;
+    height: 6vmax;
+}
+
+#initiative-inputs > svg:hover {
+    cursor: pointer;
+}
+
+#initiative-container > button {
+    position: absolute;
+    width: 30vmax;
+    height: 10vmax;
+    font-size: 4vmax;
+    top: 40vh;
+}
+
+#initiative-minigame {
+    position: absolute;
+    top: calc(40vh + 10vmax);
+    height: calc(100vh - 40vh - 10vmax - 10vmin);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5vmin;
+    border: 2vmin dashed black;
+    border-radius: 2rem;
+}
+
+#initiative-players {
+    position: absolute;
+    top: 5vmin;
+    right: 0;
+    width: 15vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 3vmin;
+}
+
+.initiative-player-icon {
+    position: relative;
+    border-radius: 50%;
+    width: 10vmin;
+    height: 10vmin;
+    will-change: background-position;
+    animation-name: bg-scroll;
+    animation-iteration-count: infinite;
+    animation-duration: 8s;
+    animation-timing-function: linear;
+}
+
+.initiative-player-icon > .animated-text-container {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: -1.75vmin;
+    left: 1.75vw;
+}
+
+.initiative-player-icon > p {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY( -50%);
+    font-weight: bold;
+    font-size: 5vmin;
+}
+
+@keyframes bg-scroll {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 166px 83px;
+    }
+}

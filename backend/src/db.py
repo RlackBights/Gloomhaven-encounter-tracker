@@ -1,6 +1,7 @@
 import json
 import io
 from os import read
+from typing_extensions import Any
 
 from .user_data import *
 
@@ -51,10 +52,10 @@ class Database:
         self.__write_data(data)
         return user.id
 
-    def read(self, id):
+    def read(self, user_id):
         data: list[UserData] = self.__load_data()
         for i in data:
-            if i["id"] == id:
+            if i["id"] == user_id:
                 return i
         return None
     
@@ -67,11 +68,15 @@ class Database:
         idk = {}
         for i in data:
             if not online or i.connected:
-                out.append({"id": i.id, "name": i.name, "color": i.color, "pattern": i.pattern})
+                out.append({"id": i.id, "name": i.name, "color": i.color, "pattern": i.pattern, "initiativeReady": i.initiative_ready})
         return out
     
     def update(self, id, key, value):
         data: list[UserData] = self.__load_data()
+
+        if type(id) == str:
+            id = int(id)
+
         for i in data:
             if i["id"] == id:
                 i[key] = value

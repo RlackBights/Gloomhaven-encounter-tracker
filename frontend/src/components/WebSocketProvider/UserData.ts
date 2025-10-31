@@ -4,4 +4,5 @@ export interface UserData
     name: string,
     color: string,
     pattern: number
+    initiativeReady: boolean | undefined
 }

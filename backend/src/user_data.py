@@ -2,11 +2,12 @@ import json
 from random import randint
 
 class UserData():
-    def __init__(self, id = -1, name = f"User_{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}", color = "#808080", pattern = 0, connected = True):
+    def __init__(self, id = -1, name = f"User_{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}{randint(0, 9)}", color = "#808080", pattern = 0, initiative_ready = False, connected = True):
         self.id = id
         self.name = name
         self.color = color
         self.pattern = pattern
+        self.initiative_ready = initiative_ready
         self.connected = connected
 
     def toJSON(self):
