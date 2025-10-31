@@ -1,6 +1,7 @@
 import json
 import io
-from os import read
+from os import path, read
+import os
 from typing_extensions import Any
 
 from .user_data import *
@@ -8,7 +9,16 @@ from .user_data import *
 class Database:
     def __init__(self, name: str):
         self.file_name = name + ".json"
-        open(self.file_name, 'r').close()
+        file_exists = os.path.exists(f"{os.path.abspath(os.getcwd())}/src/{self.file_name}")
+        
+        if not file_exists:
+            open(self.file_name, "w").close()
+        
+        with open(self.file_name, "r") as f_r:
+            if f_r.read() == "":
+                f_w = open(self.file_name, "w")
+                f_w.write("[]")
+                f_w.close()
     
     def __read(self):
         file = open(self.file_name, 'r')

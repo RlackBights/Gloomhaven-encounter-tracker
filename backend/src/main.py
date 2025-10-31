@@ -34,7 +34,6 @@ for i in db.read_all():
 async def process_message(websocket: WebSocket, data):
     match (data["type"]):
         case 0: # Update player data
-            print(data)
             for i in data:
                 if i not in ["type", "id"]:
                     db.update(data["id"], i, data[i])
@@ -94,14 +93,11 @@ async def websocket_connection(websocket: WebSocket):
     except WebSocketDisconnect:
         async def disconnect(connection_id, websocket):
             try:
-                print("start disconnect")
                 await asyncio.sleep(RECONNECT_GRACE_PERIOD)
-                print(connection_id)
                 db.update(connection_id, "connected", False)
                 connections.remove(websocket)
                 await refresh_users()
             except asyncio.CancelledError:
-                print("cancelled disconnect")
                 await refresh_users()
                 
         task = asyncio.create_task(disconnect(connection_id, websocket))
